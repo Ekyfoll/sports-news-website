@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportske Vijesti - Bosnian Sports News</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .translate-btn {
+            background: #2196F3;
+        }
+
+        .translate-btn:hover {
+            background: #1976D2;
+        }
+
+        .stats {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .articles-container {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .article {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .article:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .article-meta {
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .article-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .article-title-translated {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .article-description {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .article-description-translated {
+            margin-bottom: 15px;
+            color: #333;
+            font-style: italic;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 5px 15px;
+            font-size: 12px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .status-translated {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .success {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .controls {
+                justify-content: center;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .article-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1>🏆 Sportske Vijesti</h1>
+                    <p class="subtitle">Svjetske sportske vijesti prevedene na bosanski jezik</p>
+                </div>
+                <div class="controls">
+                    <button onclick="fetchNews()" id="fetchBtn">📰 Učitaj Vijesti</button>
+                    <button onclick="translateAll()" id="translateBtn" class="translate-btn">🌐 Prevedi Sve</button>
+                    <button onclick="loadArticles()" id="refreshBtn">🔄 Osvježi</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats" id="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalArticles">0</div>
+                    <div class="stat-label">Ukupno članaka</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="translatedArticles">0</div>
+                    <div class="stat-label">Prevedeno</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="translationPercentage">0%</div>
+                    <div class="stat-label">Procenat prevoda</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="recentArticles">0</div>
+                    <div class="stat-label">Nedavni članci</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="messages"></div>
+        
+        <div id="articlesContainer" class="articles-container">
+            <div class="loading">Učitavanje članaka...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/news';
+        
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadArticles();
+        });
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalArticles').textContent = data.stats.total_articles;
+                    document.getElementById('translatedArticles').textContent = data.stats.translated_articles;
+                    document.getElementById('translationPercentage').textContent = data.stats.translation_percentage + '%';
+                    document.getElementById('recentArticles').textContent = data.stats.recent_articles;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadArticles() {
+            try {
+                const container = document.getElementById('articlesContainer');
+                container.innerHTML = '<div class="loading">Učitavanje članaka...</div>';
+                
+                const response = await fetch(`${API_BASE}/articles?per_page=20`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayArticles(data.articles);
+                } else {
+                    container.innerHTML = '<div class="error">Greška pri učitavanju članaka</div>';
+                }
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                document.getElementById('articlesContainer').innerHTML = 
+                    '<div class="error">Greška pri učitavanju članaka</div>';
+            }
+        }
+
+        function displayArticles(articles) {
+            const container = document.getElementById('articlesContainer');
+            
+            if (articles.length === 0) {
+                container.innerHTML = '<div class="loading">Nema dostupnih članaka. Kliknite "Učitaj Vijesti" da učitate nove članke.</div>';
+                return;
+            }
+            
+            container.innerHTML = articles.map(article => `
+                <div class="article">
+                    <div class="article-header">
+                        <div class="article-meta">
+                            <span>📅 ${new Date(article.published_at).toLocaleDateString('bs-BA')}</span>
+                            <span>📰 ${article.source}</span>
+                            <span class="status-badge ${article.is_translated ? 'status-translated' : 'status-pending'}">
+                                ${article.is_translated ? '✅ Prevedeno' : '⏳ Čeka prevod'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <h2 class="article-title">${article.title}</h2>
+                    ${article.title_translated ? `<h3 class="article-title-translated">${article.title_translated}</h3>` : ''}
+                    
+                    <p class="article-description">${article.description || ''}</p>
+                    ${article.description_translated ? `<p class="article-description-translated">${article.description_translated}</p>` : ''}
+                    
+                    <div class="article-actions">
+                        <a href="${article.url}" target="_blank" style="text-decoration: none;">
+                            <button class="btn-small">🔗 Izvorni članak</button>
+                        </a>
+                        ${!article.is_translated ? `
+                            <button class="btn-small translate-btn" onclick="translateArticle(${article.id})">
+                                🌐 Prevedi
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function fetchNews() {
+            const btn = document.getElementById('fetchBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Učitavanje...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/fetch-news`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ limit: 10 })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage(`✅ Uspješno učitano ${data.new_articles} novih članaka`, 'success');
+                    loadStats();
+                    loadArticles();
+                } else {
+                    showMessage('❌ Greška pri učitavanju vijesti', 'error');
+                }
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                showMessage('❌ Greška pri učitavanju vijesti', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📰 Učitaj Vijesti';
+            }
+        }
+
+        async function translateAll() {
+            const btn = document.getElementById('translateBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Prevođenje...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/translate-all`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage(`✅ Uspješno prevedeno ${data.translated_count} članaka`, 'success');
+                    loadStats();
+                    loadArticles();
+                } else {
+                    showMessage('❌ Greška pri prevođenju', 'error');
+                }
+            } catch (error) {
+                console.error('Error translating articles:', error);
+                showMessage('❌ Greška pri prevođenju', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🌐 Prevedi Sve';
+            }
+        }
+
+        async function translateArticle(articleId) {
+            try {
+                const response = await fetch(`${API_BASE}/translate-article/${articleId}`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('✅ Članak uspješno preveden', 'success');
+                    loadStats();
+                    loadArticles();
+                } else {
+                    showMessage('❌ Greška pri prevođenju članka', 'error');
+                }
+            } catch (error) {
+                console.error('Error translating article:', error);
+                showMessage('❌ Greška pri prevođenju članka', 'error');
+            }
+        }
+
+        function showMessage(message, type) {
+            const messagesContainer = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type;
+            messageDiv.textContent = message;
+            
+            messagesContainer.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
+
